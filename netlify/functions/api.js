@@ -401,19 +401,6 @@ app.use('/tickets', router);
 app.use((req, res) => res.status(404).json({ error: `${req.method} ${req.path} not found` }));
 
 // ═══════════════════════════════════════════════════════════════════════════════
-    .connect(process.env.MONGODB_URI, {
-      serverSelectionTimeoutMS: 10000,
-      socketTimeoutMS: 45000,
-      family: 4,
-    })
-    .catch(err => {
-      dbPromise = null; // allow retry on next invocation
-      throw err;
-    });
-  return dbPromise;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════════
 // NETLIFY HANDLER
 // ═══════════════════════════════════════════════════════════════════════════════
 
