@@ -1,0 +1,27 @@
+[build]
+  command = "npm install && cd frontend && npm install && npm run build"
+  publish = "frontend/dist"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["mongoose"]
+
+# ── API redirects → Netlify Function ────────────────────────────────────────
+[[redirects]]
+  from = "/tickets"
+  to   = "/.netlify/functions/api/tickets"
+  status = 200
+  force  = true
+
+[[redirects]]
+  from = "/tickets/*"
+  to   = "/.netlify/functions/api/tickets/:splat"
+  status = 200
+  force  = true
+
+# ── SPA catch-all (must be LAST) ─────────────────────────────────────────────
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
