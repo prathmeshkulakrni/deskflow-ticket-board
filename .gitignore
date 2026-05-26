@@ -5,3 +5,6 @@ frontend/node_modules/
 backend/node_modules/
 *.log
 .DS_Store
+
+# Local Netlify folder
+.netlify

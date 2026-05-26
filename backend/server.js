@@ -44,19 +44,27 @@ app.use((err, req, res, next) => {
 // ── Start ─────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 
+global.useMockDB = false;
+
+console.log('🔄 Attempting to connect to MongoDB Atlas...');
 mongoose
   .connect(process.env.MONGODB_URI, {
-    serverSelectionTimeoutMS: 10000,
-    socketTimeoutMS: 45000,
+    serverSelectionTimeoutMS: 4000, // Fail fast locally to jump to fallback database quickly
+    socketTimeoutMS: 30000,
     family: 4, // Force IPv4
   })
   .then(() => {
-    console.log('✅ MongoDB connected');
+    console.log('✅ MongoDB connected successfully');
+    global.useMockDB = false;
     app.listen(PORT, () =>
-      console.log(`🚀 DeskFlow API running on port ${PORT}`)
+      console.log(`🚀 DeskFlow API running on port ${PORT} (Connected to MongoDB Atlas)`)
     );
   })
   .catch((err) => {
     console.error('❌ MongoDB connection failed:', err.message);
-    process.exit(1);
+    console.warn('💡 Switching dynamically to premium In-Memory Fallback DB to keep local dev 100% active!');
+    global.useMockDB = true;
+    app.listen(PORT, () =>
+      console.log(`🚀 DeskFlow API running on port ${PORT} (In-Memory Fallback DB Mode)`)
+    );
   });
